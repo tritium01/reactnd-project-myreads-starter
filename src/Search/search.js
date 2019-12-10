@@ -32,11 +32,16 @@ class BookSearch extends Component {
             })
             .catch(err => alert(err))
     };
+    eventCatcher = (event, book)=> {
+        if(event === "read"){
+            this.props.bookDistro(book);
+        }
+    };
+
     handleInputThrottle = _.throttle((q)=>this.updateQuery(q), 1000);
 render() {
     const {query, bookSearch} = this.state;
-    const {books} = this.props;
-    console.log(bookSearch);
+
 
 
     return(
@@ -65,8 +70,8 @@ render() {
                                         backgroundImage: `url(${book.imageLinks.thumbnail})`
                                     }}
                                 />
-                                <div className="book-shelf-changer">
-                                    <select>
+                                <div className="book-shelf-changer" >
+                                    <select onChange={(event)=> this.eventCatcher(event.target.value, book)}>
                                         <option value="move" disabled>Move to...</option>
                                         <option value="currentlyReading">Currently Reading</option>
                                         <option value="wantToRead">Want to Read</option>
