@@ -1,19 +1,47 @@
 import React, {Component} from 'react'
-import BookSearch from "../Search/search";
 import {Link} from "react-router-dom";
+import BookList from "./books";
+import * as BooksAPI from "../utils/BooksAPI";
 
 
 class ShelfList extends Component {
-    state={
-
+    state = {
+        books: []
+    };
+    componentDidMount() {
+        BooksAPI.getAll()
+            .then((books)=>{
+                this.setState(()=>({
+                    books
+                }))
+            })
     }
 
+    bookDistro = (shelf, book)=> {
+
+        if(shelf === "read"){
+            if(book.id )
+            this.setState((currState) =>({
+                books:  currState.books.concat([book])
+            }));
+            BooksAPI.search(book.id, 'read')
+
+        }
+
+        if (shelf === "none"){
+            console.log(book.id);
+            this.setState((currState)=>({
+                books: currState.books.filter(function(currState) {return currState.id !== book.id})
+            }))
+        }
+
+
+    };
+
     render() {
-        const {read} = this.props;
-        console.log('Read State', read)
+
         return(
         <div>
-
             <div className="bookshelf">
                 <h2 className="bookshelf-title">Currently Reading</h2>
                 <div className="bookshelf-books">
@@ -33,35 +61,10 @@ class ShelfList extends Component {
                 <h2 className="bookshelf-title">Read</h2>
                 <div className="bookshelf-books">
                     <ol className="books-grid">
-                        {read.map((book)=>(
-                            book.map((book)=>(
-                            <li key={book.id}>
-                                <div className="book">
-                                    <div className="book-top">
-                                        <div
-                                            className="book-cover"
-                                            style={{
-                                                width:128, height: 193,
-                                                backgroundImage: `url(${book.imageLinks.thumbnail})`
-                                            }}
-                                        />
-                                        <div className="book-shelf-changer" >
-                                            <select onChange={(event)=> this.eventCatcher(event.target.value, book)}>
-                                                <option value="move" disabled>Move to...</option>
-                                                <option value="currentlyReading">Currently Reading</option>
-                                                <option value="wantToRead">Want to Read</option>
-                                                <option value="read">Read</option>
-                                                <option value="none">None</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="book-title">{`${book.title}`}</div>
-                                    <div className="book-authors">{book.authors}</div>
-
-                                </div>
-                            </li>
-                            ))
-                        ))}
+                        <BookList
+                        books={this.state.books}
+                        bookDistro={this.bookDistro}
+                        />
                     </ol>
                 </div>
             </div>
@@ -72,6 +75,7 @@ class ShelfList extends Component {
                     Add a Book
                 </button></Link>
             </div>
+
         </div>
 
         )
