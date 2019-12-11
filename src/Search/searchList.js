@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI";
 import * as _ from "underscore";
-import BookList from "../shelf/books";
+import BookList from "../shelf/BookLists";
 
 class SearchList extends Component{
     state={
@@ -42,7 +42,6 @@ class SearchList extends Component{
     handleInputThrottle = _.throttle((q)=>this.updateQuery(q), 1000);
     render() {
         console.log("Book Search",this.state.bookSearch);
-        const {eventCatcher} = this.props;
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -60,7 +59,6 @@ class SearchList extends Component{
 
                 <BookList
                 books={this.state.bookSearch}
-                eventCatcher={eventCatcher}
                 />
 
                 </div>

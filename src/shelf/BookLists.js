@@ -1,21 +1,60 @@
 import React, {Component} from 'react'
-import * as BooksAPI from "../utils/BooksAPI";
+import * as BooksAPI from '../utils/BooksAPI'
 
+class BookList extends Component {
+    state = {
+        books: [],
+        currentlyReading: [],
+        wantToRead: [],
+        read: []
+    };
 
-class BookList extends Component{
+    componentDidMount() {
+        BooksAPI.getAll()
+            .then((books)=>{
+            books.map((book)=>{
+                this.setState((currBook) =>({
+                    books: currBook.books.concat(book)
 
-    eventCatcher = (event, book)=> {
+                }));
 
-        this.props.bookDistro(event, book);
+                if(book.shelf === "read"){
+                    this.setState((currBook, state)=>({
+                        read: currBook.read.concat(book.id)
+                    }))
+                }
+
+            })
+            });
+       // this.shelfHandler()
+
+    }
+
+    shelfHandler = (shelf)=> {
+        this.state.books.filter((book)=>{
+            const bookId = book.id;
+            return bookId.includes(shelf)
+        });
+      this.template()
+    };
+
+    eventCatcher = (event, book) => {
+        BooksAPI.update(book, event)
+        .then(answer=>(
+            console.log(answer)
+        ))
+
     };
 
 
     render() {
-            const {books} = this.props;
-        return (
-                <div>
-                    <ol className="books-grid">
-                    {(books.error === "empty query")? null : books.map((book) => (
+        const {books} = this.state;
+        console.log(this.state);
+        return(
+
+            <div>
+                <ol className="books-grid">
+                    {(books.error === "empty query") ? null : books.map((book) => (
                         <li key={book.id}>
                             <div className="book">
                                 <div className="book-top">
@@ -43,8 +82,8 @@ class BookList extends Component{
                         </li>
 
                     ))}
-                    </ol>
-                </div>
+                </ol>
+            </div>
         )
     }
 }
