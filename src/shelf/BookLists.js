@@ -10,72 +10,75 @@ class BookList extends Component {
     };
 
     componentDidMount() {
-        BooksAPI.getAll()
-            .then((books)=>{
-            books.map((book)=>{
-                this.setState((currBook) =>({
-                    books: currBook.books.concat(book)
-
-                }));
-
-                if(book.shelf === "read"){
-                    this.setState((currBook, state)=>({
-                        read: currBook.read.concat(book.id)
-                    }))
-
-                } if(book.shelf === "currentlyReading") {
-                    this.setState((currBook, state)=>({
-                        currentlyReading: currBook.currentlyReading.concat(book.id)
-                    }))
-                } if(book.shelf === "wantToRead"){
-                    this.setState((currBook, state)=>({
-                        wantToRead: currBook.wantToRead.concat(book.id)
-                    }))
-                }
-
-            })
-            });
-
-
+        this.getAll()
     }
 
+    getAll = ()=> {
+        BooksAPI.getAll()
+            .then((books)=>{
+                this.setState(()=>({
+                    books : books
+                }));
+                this.sortingHat(books)
+            });
+    };
+
+    sortingHat = (books)=> {
+        books.map((book)=>{
+            const shelf = book.shelf;
+                this.setState((currState)=>({
+                    [`${shelf}`] : currState[shelf].concat(book.id)
+                }))
+
+        })
+    };
 
 
     eventCatcher = (event, book) => {
-        BooksAPI.update(book, event)
-        .then(answer=>(
-            this.setState(()=>({
-                currentlyReading: answer.currentlyReading,
-                read: answer.read,
-                wantToRead: answer.wantToRead
-            }))
-        ))
-
-        if(event === "none"){
-            console.log("none")
-            this.setState((currBooks)=>({
-                books: currBooks.books.filter((c)=>{
-                    return c  !== book
+       if(event === "none") {
+            this.setState((currBooks) => ({
+                books: currBooks.books.filter((c) => {
+                    return c !== book
                 })
 
 
             }))
-        }
+        } else if(this.shelfChecker(event, book) === false) {
+           BooksAPI.update(book, event)
+               .then(answer => (
+
+                   this.setState(() => ({
+                       currentlyReading: answer.currentlyReading,
+                       read: answer.read,
+                       wantToRead: answer.wantToRead
+                   }))
+               ));
+       }
+
+    };
+
+
+
+    shelfChecker = (event, book)=> {
+        const shelf = this.state[event];
+        const answer =shelf.includes(book.id);
+        return !!answer;
     };
 
 
     render() {
         const {books} = this.state;
         const {bookSearch, query, shelf} = this.props;
-        console.log('Books', this.state)
+        console.log('idk', this.state);
+        const newBooks = books.filter((c)=>{
+            return c.shelf === shelf
+        });
 
         return(
 
             <div>
                 <ol className="books-grid">
-                    {((query !== undefined) ? bookSearch : books.filter((c)=>{
-                        return c.shelf === shelf
-                    })).map((book) => (
+                    {((query !== undefined) ? bookSearch : newBooks).map((book) => (
                         <li key={book.id}>
                             <div className="book">
                                 <div className="book-top">
