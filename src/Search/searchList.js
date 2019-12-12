@@ -28,12 +28,17 @@ class SearchList extends Component{
     displayBooks = (query)=> {
         BooksAPI.search(query)
             .then((book)=>{
-                if(book.error === "empty query"){
-
+                console.log(book)
+                if(book.error !== "empty query"){
+                    this.setState(()=>({
+                        bookSearch: book
+                    }))
+                } else {
+                    this.setState(()=>({
+                        bookSearch: []
+                    }))
                 }
-                this.setState(()=>({
-                    bookSearch: book
-                }))
+
             })
 
     };
@@ -41,8 +46,9 @@ class SearchList extends Component{
 
     handleInputThrottle = _.throttle((q)=>this.updateQuery(q), 1000);
     render() {
-        console.log("Book Search",this.state.bookSearch);
+
         return (
+
             <div className="search-books">
                 <div className="search-books-bar">
                     <Link
@@ -58,7 +64,8 @@ class SearchList extends Component{
                 <div className="search-books-results">
 
                 <BookList
-                books={this.state.bookSearch}
+                bookSearch={this.state.bookSearch}
+                query={this.state.query}
                 />
 
                 </div>

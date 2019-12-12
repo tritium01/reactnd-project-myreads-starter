@@ -7,31 +7,6 @@ import BookList from "./BookLists";
 class ShelfList extends Component{
 
 
-/*    bookDistro = (shelf, book)=> {
-
-        if(shelf === "read"){
-
-            this.setState((currState) =>({
-                books:  currState.books.concat([book])
-            }));
-            console.log(book);
-            BooksAPI.update(book, 'read')
-                .then(answer => (
-                    this.setState(()=>({
-                        read: answer.read
-                    }))
-                ))
-        }
-
-        if (shelf === "none"){
-            console.log(book.id);
-            this.setState((currState)=>({
-                books: currState.books.filter(function(currState) {return currState.id !== book.id})
-            }))
-        }
-
-
-    };*/
 
     template = (name, shelf) => (
 
@@ -40,7 +15,7 @@ class ShelfList extends Component{
         <div className="bookshelf-books">
             <ol className="books-grid">
                 <BookList
-                template={this.template}
+                    shelf={shelf}
                 />
             </ol>
         </div>
@@ -49,12 +24,11 @@ class ShelfList extends Component{
 );
     render() {
 
-        console.log('Global State', this.state);
         return (
             <div>
-                {this.template("Currently Reading")}
-                {this.template("Want to Read")}
-                {this.template("Read")}
+                {this.template("Currently Reading", 'currentlyReading')}
+                {this.template("Want to Read", 'wantToRead')}
+                {this.template("Read", 'read')}
                 <div className="open-search">
                     <Link
                         to="/Search"

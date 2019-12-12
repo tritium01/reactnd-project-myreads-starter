@@ -5,10 +5,7 @@ import SearchList from "./Search/searchList";
 import './App.css'
 
 
-class BooksApp extends React.Component {
-
-
-    render() {
+function BooksApp(props) {
 
     return (
     <Router>
@@ -28,7 +25,7 @@ class BooksApp extends React.Component {
       </div>
     </Router>
     )
-  }
+
 }
 
 export default BooksApp

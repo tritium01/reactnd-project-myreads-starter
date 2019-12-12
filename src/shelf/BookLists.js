@@ -22,39 +22,60 @@ class BookList extends Component {
                     this.setState((currBook, state)=>({
                         read: currBook.read.concat(book.id)
                     }))
+
+                } if(book.shelf === "currentlyReading") {
+                    this.setState((currBook, state)=>({
+                        currentlyReading: currBook.currentlyReading.concat(book.id)
+                    }))
+                } if(book.shelf === "wantToRead"){
+                    this.setState((currBook, state)=>({
+                        wantToRead: currBook.wantToRead.concat(book.id)
+                    }))
                 }
 
             })
             });
-       // this.shelfHandler()
+
 
     }
 
-    shelfHandler = (shelf)=> {
-        this.state.books.filter((book)=>{
-            const bookId = book.id;
-            return bookId.includes(shelf)
-        });
-      this.template()
-    };
+
 
     eventCatcher = (event, book) => {
         BooksAPI.update(book, event)
         .then(answer=>(
-            console.log(answer)
+            this.setState(()=>({
+                currentlyReading: answer.currentlyReading,
+                read: answer.read,
+                wantToRead: answer.wantToRead
+            }))
         ))
 
+        if(event === "none"){
+            console.log("none")
+            this.setState((currBooks)=>({
+                books: currBooks.books.filter((c)=>{
+                    return c  !== book
+                })
+
+
+            }))
+        }
     };
 
 
     render() {
         const {books} = this.state;
-        console.log(this.state);
+        const {bookSearch, query, shelf} = this.props;
+        console.log('Books', this.state)
+
         return(
 
             <div>
                 <ol className="books-grid">
-                    {(books.error === "empty query") ? null : books.map((book) => (
+                    {((query !== undefined) ? bookSearch : books.filter((c)=>{
+                        return c.shelf === shelf
+                    })).map((book) => (
                         <li key={book.id}>
                             <div className="book">
                                 <div className="book-top">
