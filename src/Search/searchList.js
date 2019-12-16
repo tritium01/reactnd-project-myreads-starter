@@ -28,7 +28,6 @@ class SearchList extends Component{
     displayBooks = (query)=> {
         BooksAPI.search(query)
             .then((book)=>{
-                console.log(book)
                 if(book.error !== "empty query"){
                     this.setState(()=>({
                         bookSearch: book

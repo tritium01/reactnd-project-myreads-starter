@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import * as BooksAPI from '../utils/BooksAPI'
-
+import  * as _ from 'underscore'
 class BookList extends Component {
     state = {
         books: [],
@@ -35,6 +35,7 @@ class BookList extends Component {
 
 
     eventCatcher = (event, book) => {
+
        if(event === "none") {
             this.setState((currBooks) => ({
                 books: currBooks.books.filter((c) => {
@@ -52,10 +53,16 @@ class BookList extends Component {
                        read: answer.read,
                        wantToRead: answer.wantToRead
                    }))
+
+
                ));
+           this.test103()
+
        }
 
     };
+
+
 
 
 
@@ -65,14 +72,35 @@ class BookList extends Component {
         return !!answer;
     };
 
+    test101 = (shelf, book) => {
+        console.log(book);
+        const shelves = this.state[shelf];
+        const answer =shelf.includes(book.id);
+
+        if(answer){
+
+        }
+
+
+/*          if (book.id === shelves.includes(book.id)){
+              console.log(book.id)
+          }*/
+
+    };
+
+    test103 = () => {
+        console.log('test103 is working');
+        this.forceUpdate();
+    };
+
 
     render() {
         const {books} = this.state;
         const {bookSearch, query, shelf} = this.props;
-        console.log('idk', this.state);
         const newBooks = books.filter((c)=>{
             return c.shelf === shelf
         });
+        console.log(books);
 
         return(
 
