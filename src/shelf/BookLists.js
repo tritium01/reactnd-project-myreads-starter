@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import * as BooksAPI from '../utils/BooksAPI'
-import  * as _ from 'underscore'
 class BookList extends Component {
     state = {
 
@@ -19,7 +18,7 @@ class BookList extends Component {
 
 
     sortingHat = (books)=> {
-        console.log('SortingHat Books', books)
+
         books.map((book)=>{
             const shelf = book.shelf;
             if(this.shelfChecker(shelf, book) === false) {
@@ -32,7 +31,7 @@ class BookList extends Component {
     };
 
     eventCatcher = (event, book) => {
-        console.log("Book Format", book)
+
         BooksAPI.update(book, event)
         .then(answer=>(
             this.setState(()=>({
@@ -41,17 +40,28 @@ class BookList extends Component {
                 wantToRead: answer.wantToRead
             }))
 
-        ))
-        if(event !== "none"){
-            //this.props.update(book)
-        }else if(event === "none"){
-            this.props.bookRemover(book)
-        }
+        ));
+
+   this.componentChecker(event, book)
 
 
     };
 
-
+    componentChecker = (event, book) => {
+        if (event !== "none") {
+            if (this.props.query !== undefined) {
+                return null
+            } else {
+                this.props.update(book, event)
+            }
+        } else if(event === "none") {
+            if (this.props.query !== undefined) {
+                return null
+            } else {
+                this.props.bookRemover(book)
+            }
+        }
+    };
 
     shelfChecker = (event, book)=> {
         const shelf = this.state[event];
@@ -59,11 +69,21 @@ class BookList extends Component {
         return !!answer;
     };
 
+    shelfFinder = (book)=> {
+        const id = book.id;
+        const shelf = this.state;
+       const entries = Object.entries(shelf);
+       for (const key of entries) {
+           if (key[1].includes(id)) {
+               return key[0]
+           }
+       }
+       return 'none'
 
+    };
 
 
     render() {
-        //const {books} = this.state;
         const {bookSearch, query, shelf, books} = this.props;
 
         return(
@@ -84,7 +104,7 @@ class BookList extends Component {
                                         }}
                                     />
                                     <div className="book-shelf-changer">
-                                        <select value={book.shelf} onChange={(event) => this.eventCatcher(event.target.value, book)}>
+                                        <select value={this.shelfFinder(book)} onChange={(event) => this.eventCatcher(event.target.value, book)}>
                                             <option value="move" disabled>Move to...</option>
                                             <option value="currentlyReading">Currently Reading</option>
                                             <option value="wantToRead">Want to Read</option>

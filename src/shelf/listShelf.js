@@ -7,7 +7,7 @@ import BookList from "./BookLists";
 class ShelfList extends Component{
     state= {
         books: [],
-        updater: {}
+
     };
 
     componentDidMount() {
@@ -20,12 +20,11 @@ class ShelfList extends Component{
                 books.map((book)=>{
                     this.setState((currBook) =>({
                         books: currBook.books.concat(book)
-
                     }));
 
                 })
             });
-    }
+    };
 
     bookRemover = (book)=>{
         this.setState((currBooks)=>({
@@ -34,21 +33,17 @@ class ShelfList extends Component{
             })
 
         }))
-    }
+    };
 
-    test102 = (book)=> {
-        const books = this.state.books
-        const newBooks = books.filter((b)=>{
-            return b.id !== book.id
-        })
-        const finalBooks = newBooks.push(book)
-        console.log('test103', book)
-        console.log('test104', books[book.id])
-        console.log('test105', newBooks)
- /*       this.setState(()=>({
-            books: finalBooks
-        }))*/
-    }
+    test102 = (book, event)=> {
+        const books = this.state.books;
+        const bookCopy = JSON.parse(JSON.stringify(books));
+        const onlyBook = bookCopy.filter(b=> {return b.title === book.title});
+        onlyBook[0].shelf = event;
+        this.setState(()=>({
+            books: bookCopy
+        }))
+    };
 
 
     template = (name, shelf) => (
@@ -69,12 +64,12 @@ class ShelfList extends Component{
 
 );
     render() {
-        console.log(this.state.books);
         return (
             <div>
                 {this.template("Currently Reading", 'currentlyReading')}
                 {this.template("Want to Read", 'wantToRead')}
                 {this.template("Read", 'read')}
+
                 <div className="open-search">
                     <Link
                         to="/Search"
