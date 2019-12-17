@@ -1,12 +1,16 @@
 import React, {Component} from 'react'
 import {Link} from "react-router-dom";
-
+import * as BooksAPI from "../utils/BooksAPI";
 import BookList from "./BookLists";
 
 
 class ShelfList extends Component{
+    state= {
 
-
+    };
+    handleUpdate = ()=>{
+        this.forceUpdate()
+    }
 
     template = (name, shelf) => (
 
@@ -16,7 +20,7 @@ class ShelfList extends Component{
             <ol className="books-grid">
                 <BookList
                     shelf={shelf}
-
+                    updater={this.handleUpdate}
                 />
             </ol>
         </div>
