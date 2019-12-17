@@ -16,6 +16,7 @@ class ShelfList extends Component{
             <ol className="books-grid">
                 <BookList
                     shelf={shelf}
+
                 />
             </ol>
         </div>
