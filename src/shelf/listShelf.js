@@ -7,7 +7,6 @@ import BookList from "./BookLists";
 class ShelfList extends Component{
     state= {
         books: [],
-
     };
 
     componentDidMount() {
@@ -21,7 +20,6 @@ class ShelfList extends Component{
                     this.setState((currBook) =>({
                         books: currBook.books.concat(book)
                     }));
-
                 })
             });
     };
@@ -35,7 +33,7 @@ class ShelfList extends Component{
         }))
     };
 
-    test102 = (book, event)=> {
+    shelfMover = (book, event)=> {
         const books = this.state.books;
         const bookCopy = JSON.parse(JSON.stringify(books));
         const onlyBook = bookCopy.filter(b=> {return b.title === book.title});
@@ -56,7 +54,7 @@ class ShelfList extends Component{
                     shelf={shelf}
                     books={this.state.books}
                     bookRemover={this.bookRemover}
-                    update={this.test102}
+                    update={this.shelfMover}
                 />
             </ol>
         </div>

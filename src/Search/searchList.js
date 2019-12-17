@@ -24,7 +24,6 @@ class SearchList extends Component{
         }
     };
 
-
     displayBooks = (query)=> {
         BooksAPI.search(query)
             .then((book)=>{
@@ -42,8 +41,7 @@ class SearchList extends Component{
 
     };
 
-
-    handleInputThrottle = _.throttle((q)=>this.updateQuery(q), 1000);
+    handleInputThrottle = _.throttle((q)=>this.updateQuery(q), 1500);
     render() {
 
         return (
