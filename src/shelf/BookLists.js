@@ -3,31 +3,23 @@ import * as BooksAPI from '../utils/BooksAPI'
 import  * as _ from 'underscore'
 class BookList extends Component {
     state = {
-        books: [],
+
         currentlyReading: [],
         wantToRead: [],
         read: []
     };
 
+
     componentDidMount() {
-        this.getAll()
-    }
-
-    getAll = ()=>{
         BooksAPI.getAll()
-            .then((books)=>{
-                books.map((book)=>{
-                    this.setState((currBook) =>({
-                        books: currBook.books.concat(book)
-
-                    }));
-                    this.sortingHat(books)
-                })
-            });
+            .then(books => {
+                this.sortingHat(books)
+            })
     }
 
 
     sortingHat = (books)=> {
+        console.log('SortingHat Books', books)
         books.map((book)=>{
             const shelf = book.shelf;
             if(this.shelfChecker(shelf, book) === false) {
@@ -39,8 +31,8 @@ class BookList extends Component {
         })
     };
 
-
     eventCatcher = (event, book) => {
+        console.log("Book Format", book)
         BooksAPI.update(book, event)
         .then(answer=>(
             this.setState(()=>({
@@ -50,48 +42,15 @@ class BookList extends Component {
             }))
 
         ))
-
-
-        if(event === "none"){
-            console.log("none")
-            this.setState((currBooks)=>({
-                books: currBooks.books.filter((c)=>{
-                    return c  !== book
-                })
-
-
-            }))
+        if(event !== "none"){
+            //this.props.update(book)
+        }else if(event === "none"){
+            this.props.bookRemover(book)
         }
+
+
     };
 
-/*        eventCatcher = (event, book) => {
-
-            if(event === "none") {
-                this.setState((currBooks) => ({
-                    books: currBooks.books.filter((c) => {
-                        return c !== book
-                    })
-
-
-                }))
-            } else if (event !== "none"){
-                if(this.shelfChecker(event, book) === false) {
-                    BooksAPI.update(book, event)
-                        .then(answer => (
-
-                            this.setState(() => ({
-                                currentlyReading: answer.currentlyReading,
-                                read: answer.read,
-                                wantToRead: answer.wantToRead
-                            }))
-
-
-                        ));
-
-
-                }
-            }
-    }*/
 
 
     shelfChecker = (event, book)=> {
@@ -104,21 +63,8 @@ class BookList extends Component {
 
 
     render() {
-        const {books} = this.state;
-        const {bookSearch, query, shelf} = this.props;
-
-        const test101 = (shelf, book) => {
-            console.log(book);
-            const shelves = this.state[shelf];
-            const answer =shelf.includes(book.id);
-
-            if(answer){
-
-            }
-
-
-        };
-        console.log('Books', this.state)
+        //const {books} = this.state;
+        const {bookSearch, query, shelf, books} = this.props;
 
         return(
 
@@ -138,7 +84,7 @@ class BookList extends Component {
                                         }}
                                     />
                                     <div className="book-shelf-changer">
-                                        <select onChange={(event) => this.eventCatcher(event.target.value, book)}>
+                                        <select value={book.shelf} onChange={(event) => this.eventCatcher(event.target.value, book)}>
                                             <option value="move" disabled>Move to...</option>
                                             <option value="currentlyReading">Currently Reading</option>
                                             <option value="wantToRead">Want to Read</option>

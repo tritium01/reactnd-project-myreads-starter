@@ -6,11 +6,50 @@ import BookList from "./BookLists";
 
 class ShelfList extends Component{
     state= {
-
+        books: [],
+        updater: {}
     };
-    handleUpdate = ()=>{
-        this.forceUpdate()
+
+    componentDidMount() {
+        this.getAll()
+    };
+
+    getAll = ()=>{
+        BooksAPI.getAll()
+            .then((books)=>{
+                books.map((book)=>{
+                    this.setState((currBook) =>({
+                        books: currBook.books.concat(book)
+
+                    }));
+
+                })
+            });
     }
+
+    bookRemover = (book)=>{
+        this.setState((currBooks)=>({
+            books: currBooks.books.filter((c)=>{
+                return c  !== book
+            })
+
+        }))
+    }
+
+    test102 = (book)=> {
+        const books = this.state.books
+        const newBooks = books.filter((b)=>{
+            return b.id !== book.id
+        })
+        const finalBooks = newBooks.push(book)
+        console.log('test103', book)
+        console.log('test104', books[book.id])
+        console.log('test105', newBooks)
+ /*       this.setState(()=>({
+            books: finalBooks
+        }))*/
+    }
+
 
     template = (name, shelf) => (
 
@@ -20,7 +59,9 @@ class ShelfList extends Component{
             <ol className="books-grid">
                 <BookList
                     shelf={shelf}
-                    updater={this.handleUpdate}
+                    books={this.state.books}
+                    bookRemover={this.bookRemover}
+                    update={this.test102}
                 />
             </ol>
         </div>
@@ -28,7 +69,7 @@ class ShelfList extends Component{
 
 );
     render() {
-
+        console.log(this.state.books);
         return (
             <div>
                 {this.template("Currently Reading", 'currentlyReading')}
